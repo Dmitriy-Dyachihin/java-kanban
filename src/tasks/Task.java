@@ -1,10 +1,10 @@
-package taskModel;
+package tasks;
 
 public class Task {
     private String title;
     private String description;
     private String status;
-    private int taskId;
+    private int id;
 
     public Task(String title, String description, String status) {
         this.title = title;
@@ -25,7 +25,7 @@ public class Task {
     }
 
     public void setId(int taskId) {
-        this.taskId = taskId;
+        this.id = taskId;
     }
 
     public String getTitle() {
@@ -41,7 +41,7 @@ public class Task {
     }
 
     public int getId() {
-        return taskId;
+        return id;
     }
 
     @Override
