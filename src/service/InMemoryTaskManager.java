@@ -65,17 +65,17 @@ public class InMemoryTaskManager implements  TaskManager {
     }
 
     @Override
-    public ArrayList<Task> getTasks() {
+    public List<Task> getTasks() {
         return new ArrayList<>(tasks.values());
     }
 
     @Override
-    public ArrayList<Subtask> getSubTasks() {
+    public List<Subtask> getSubtasks() {
         return new ArrayList<>(subtasks.values());
     }
 
     @Override
-    public ArrayList<Epic> getEpics() {
+    public List<Epic> getEpics() {
         return new ArrayList<>(epics.values());
     }
 
@@ -190,9 +190,9 @@ public class InMemoryTaskManager implements  TaskManager {
     }
 
     @Override
-    public ArrayList<Subtask> getTasksByEpic(Epic epic) {
+    public List<Subtask> getSubtasksByEpic(Epic epic) {
         List<Integer> listOfSubtasks = epic.getSubtasksIds();
-        ArrayList<Subtask> subtasksOfEpic = new ArrayList<>();
+        List<Subtask> subtasksOfEpic = new ArrayList<>();
         for(int i : listOfSubtasks) {
             subtasksOfEpic.add(subtasks.get(i));
         }
@@ -201,8 +201,8 @@ public class InMemoryTaskManager implements  TaskManager {
 
     @Override
     public void updateStatus(Epic epic) {
-        ArrayList<Subtask> subtaskOfEpic = getTasksByEpic(epic);
-        ArrayList<Status> listOfStatuses = new ArrayList<>();
+        List<Subtask> subtaskOfEpic = getSubtasksByEpic(epic);
+        List<Status> listOfStatuses = new ArrayList<>();
         for(Subtask subtask : subtaskOfEpic) {
             listOfStatuses.add(subtask.getStatus());
         }
