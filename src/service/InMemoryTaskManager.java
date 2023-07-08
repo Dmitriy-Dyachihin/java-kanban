@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static service.InMemoryHistoryManager.MAX_SIZE_OF_HISTORY;
-
 public class InMemoryTaskManager implements  TaskManager {
 
     private static int id = 0;
@@ -230,11 +228,6 @@ public class InMemoryTaskManager implements  TaskManager {
 
     @Override
     public List<Task> getHistory() {
-        for(int i = 0 ; i < InMemoryHistoryManager.history.size() ; i++) {
-            if (InMemoryHistoryManager.history.size() > MAX_SIZE_OF_HISTORY) {
-                InMemoryHistoryManager.history.remove(0);
-            }
-        }
-        return InMemoryHistoryManager.history;
+        return historyManager.getHistory();
     }
 }
