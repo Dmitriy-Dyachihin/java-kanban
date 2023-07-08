@@ -20,7 +20,7 @@ public class InMemoryTaskManager implements  TaskManager {
     private final Map<Integer, Epic> epics = new HashMap<>(); // Список для хранения эпиков
     private final Map<Integer, Subtask> subtasks = new HashMap<>(); // Список для хранения подзадач
 
-    private final InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
+    private final HistoryManager historyManager = Managers.getDefaultHistory();
 
     public int assignId() {
         return ++id;
