@@ -230,4 +230,14 @@ public class InMemoryTaskManager implements  TaskManager {
     public List<Task> getHistory() {
         return historyManager.getHistory();
     }
+
+    @Override
+    public void remove(int id) {
+        historyManager.remove(id);
+        if(epics.containsKey(id)) {
+            for (int idOfSubtask : epics.get(id).getSubtasksIds()) {
+                historyManager.remove(idOfSubtask);
+            }
+        }
+    }
 }

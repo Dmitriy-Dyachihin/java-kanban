@@ -50,4 +50,5 @@ public interface TaskManager {
 
     void updateStatus(Epic epic);
 
+    void remove(int id);
 }
