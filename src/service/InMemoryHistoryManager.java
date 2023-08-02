@@ -20,9 +20,7 @@ public class InMemoryHistoryManager implements HistoryManager{
             Node element = new Node();
             element.setData(task);
 
-            if (elements.containsKey(task.getId())) {
-                removeNode(elements.get(task.getId()));
-            }
+            removeNode(elements.get(task.getId()));
 
             if (head != null) {
                 element.setPrev(tail);
@@ -70,6 +68,10 @@ public class InMemoryHistoryManager implements HistoryManager{
                 }
             }
         }
+
+        private Node getNode(int id) {
+            return elements.get(id);
+        }
     }
 
     class Node  {
@@ -110,7 +112,7 @@ public class InMemoryHistoryManager implements HistoryManager{
 
     @Override
     public void remove(int id) {
-        history.removeNode(history.elements.get(id));
+        history.removeNode(history.getNode(id));
     }
 
     @Override
