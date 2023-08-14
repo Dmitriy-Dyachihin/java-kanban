@@ -240,4 +240,18 @@ public class InMemoryTaskManager implements  TaskManager {
             }
         }
     }
+
+    public void addToHistory(int id) {
+        if (epics.containsKey(id)) {
+            historyManager.add(tasks.get(id));
+        } else if (subtasks.containsKey(id)) {
+            historyManager.add(subtasks.get(id));
+        } else {
+            historyManager.add(epics.get(id));
+        }
+    }
+
+    public HistoryManager getHistoryManager() {
+        return historyManager;
+    }
 }
