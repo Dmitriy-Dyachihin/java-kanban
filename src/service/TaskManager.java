@@ -10,11 +10,11 @@ public interface TaskManager {
 
     List<Task> getHistory();
 
-    void createTask(Task task);
+    Task createTask(Task task);
 
-    void createSubtask(Subtask subtask);
+    Subtask createSubtask(Subtask subtask);
 
-    void createEpic(Epic epic);
+    Epic createEpic(Epic epic);
 
     List<Task> getTasks();
 

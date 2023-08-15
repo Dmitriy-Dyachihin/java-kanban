@@ -20,6 +20,7 @@ public class InMemoryHistoryManager implements HistoryManager{
             Node element = new Node();
             element.setData(task);
 
+
             removeNode(elements.get(task.getId()));
 
             if (head != null) {

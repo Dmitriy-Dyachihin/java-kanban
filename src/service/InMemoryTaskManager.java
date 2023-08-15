@@ -24,20 +24,23 @@ public class InMemoryTaskManager implements  TaskManager {
         return ++id;
     }
     @Override
-    public void createTask(Task task) {
+    public Task createTask(Task task) {
         if(task == null) {
             System.out.println("Некорректный ввод");
-        } else {
-            int idOfNewTask = assignId();
-            task.setId(idOfNewTask);
-            tasks.put(idOfNewTask, task);
+            return null;
         }
+        int idOfNewTask = assignId();
+        task.setId(idOfNewTask);
+        tasks.put(idOfNewTask, task);
+        return task;
+
     }
 
     @Override
-    public void createSubtask(Subtask subtask) {
+    public Subtask createSubtask(Subtask subtask) {
         if(subtask == null) {
             System.out.println("Некорректный ввод");
+            return null;
         } else {
             int idOfNewSubtask = assignId();
             subtask.setId(idOfNewSubtask);
@@ -46,21 +49,25 @@ public class InMemoryTaskManager implements  TaskManager {
                 subtasks.put(idOfNewSubtask, subtask);
                 epic.setSubtasksIds(idOfNewSubtask);
                 updateStatus(epic);
+                return subtask;
             } else {
                 System.out.println("Не существует заданного эпика");
+                return null;
             }
         }
     }
 
     @Override
-    public void createEpic(Epic epic) {
+    public Epic createEpic(Epic epic) {
         if(epic == null) {
             System.out.println("Некорректный ввод");
+            return null;
         } else {
             int idOfNewEpic = assignId();
             epic.setId(idOfNewEpic);
             epics.put(idOfNewEpic, epic);
             updateStatus(epic);
+            return epic;
         }
     }
 
@@ -101,20 +108,29 @@ public class InMemoryTaskManager implements  TaskManager {
 
     @Override
     public Task getTaskById(int id) {
-        historyManager.add(tasks.get(id));
-        return tasks.get(id);
+        Task task = tasks.get(id);
+        if (task != null) {
+            historyManager.add(task);
+        }
+        return task;
     }
 
     @Override
     public Subtask getSubtaskById(int id) {
-        historyManager.add(subtasks.get(id));
-        return subtasks.get(id);
+        Subtask subtask = subtasks.get(id);
+        if (subtask != null) {
+            historyManager.add(subtask);
+        }
+        return subtask;
     }
 
     @Override
     public Epic getEpicById(int id) {
-        historyManager.add(epics.get(id));
-        return epics.get(id);
+        Epic epic = epics.get(id);
+        if (epic != null) {
+            historyManager.add(epic);
+        }
+        return epic;
     }
 
     @Override
@@ -242,7 +258,7 @@ public class InMemoryTaskManager implements  TaskManager {
     }
 
     public void addToHistory(int id) {
-        if (epics.containsKey(id)) {
+        if (tasks.containsKey(id)) {
             historyManager.add(tasks.get(id));
         } else if (subtasks.containsKey(id)) {
             historyManager.add(subtasks.get(id));
