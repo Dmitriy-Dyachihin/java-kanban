@@ -128,7 +128,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     void shouldReturnEpics() {
         Epic epic = createEpic();
         manager.createEpic(epic);
-        manager.getTasks();
+        manager.getEpics();
         assertEquals(List.of(epic), manager.getEpics());
     }
 
@@ -198,7 +198,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    public void shouldUpdateTaskStatusToInDone() {
+    public void shouldUpdateTaskStatusToDone() {
         Task task = createTask();
         manager.createTask(task);
         task.setStatus(Status.DONE);
@@ -207,7 +207,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    public void shouldUpdateEpicStatusToInDone() {
+    public void shouldUpdateEpicStatusToDone() {
         Epic epic = createEpic();
         manager.createEpic(epic);
         epic.setStatus(Status.DONE);
@@ -312,7 +312,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    public void shouldNotDeleteSubtaskWithIncorrectId() {
+    public void shouldNotRemoveSubtaskWithIncorrectId() {
         Epic epic = createEpic();
         manager.createEpic(epic);
         Subtask subtask = createSubtask(epic);
