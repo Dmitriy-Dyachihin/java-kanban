@@ -77,7 +77,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
         Subtask subtask = createSubtask(epic);
         manager.createSubtask(subtask);
         subtask.setStatus(Status.DONE);
-        assertEquals(Status.DONE, subtask.getStatus());
+        manager.updateSubtask(subtask);
+        assertEquals(Status.DONE, epic.getStatus());
     }
 
     @Test
@@ -87,7 +88,19 @@ abstract class TaskManagerTest<T extends TaskManager> {
         Subtask subtask = createSubtask(epic);
         manager.createSubtask(subtask);
         subtask.setStatus(Status.IN_PROGRESS);
-        assertEquals(Status.IN_PROGRESS, subtask.getStatus());
+        manager.updateSubtask(subtask);
+        assertEquals(Status.IN_PROGRESS, epic.getStatus());
+    }
+
+    @Test
+    public void shouldBeInProgressEpicToo(){
+        Epic epic = new Epic("Эпик 1", "Описание эпик 1", Status.NEW, Instant.now(), 0);
+        manager.createEpic(epic);
+        Subtask subtask1 = new Subtask("Подзадача 1.1", "Описание подзадачи 1.1", Status.NEW, epic.getId(), Instant.now(), 0);
+        Subtask subtask2 = new Subtask("Подзадача 1.2", "Описание подзадачи 1.2", Status.DONE, epic.getId(), Instant.now(), 0);
+        manager.createSubtask(subtask1);
+        manager.createSubtask(subtask2);
+        assertEquals(Status.IN_PROGRESS, epic.getStatus());
     }
 
     @Test

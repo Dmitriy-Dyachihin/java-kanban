@@ -367,7 +367,7 @@ public class InMemoryTaskManager implements  TaskManager {
             boolean hasIntersections = checkIntersection(task);
 
             if (hasIntersections) {
-                throw new ManagerValidateException(task.getId() + " и " + tasks.get(i - 1) + " задачи пересекаются");
+                throw new ManagerValidateException(task.getId() + " и " + tasks.get(i - 1).getId() + " задачи пересекаются");
             }
         }
     }
