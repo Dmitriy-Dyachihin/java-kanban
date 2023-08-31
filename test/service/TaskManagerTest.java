@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.function.Executable;
 
 abstract class TaskManagerTest<T extends TaskManager> {
 
@@ -91,19 +92,54 @@ abstract class TaskManagerTest<T extends TaskManager> {
         subtask.setStatus(Status.IN_PROGRESS);
         manager.updateSubtask(subtask);
         assertEquals(Status.IN_PROGRESS, epic.getStatus());
+        assertEquals(0, epic.getDuration());
     }
 
     @Test
     public void shouldBeInProgressEpicToo(){
-        Epic epic = new Epic("Эпик 1", "Описание эпик 1", Status.NEW, Instant.now(), 0);
+        Epic epic = createEpic();
         manager.createEpic(epic);
-        Subtask subtask1 = new Subtask("Подзадача 1.1", "Описание подзадачи 1.1",
-                Status.NEW, epic.getId(), Instant.now(), 0);
-        Subtask subtask2 = new Subtask("Подзадача 1.2", "Описание подзадачи 1.2",
-                Status.DONE, epic.getId(), Instant.now(), 0);
+        Subtask subtask1 = createSubtask(epic);
         manager.createSubtask(subtask1);
+        subtask1.setStatus(Status.DONE);
+        subtask1.setDuration(60);
+        manager.updateSubtask(subtask1);
+        Subtask subtask2 = createSubtask(epic);
         manager.createSubtask(subtask2);
+        subtask2.setStatus(Status.NEW);
+        manager.updateSubtask(subtask2);
         assertEquals(Status.IN_PROGRESS, epic.getStatus());
+        assertEquals(3600000, epic.getDuration());
+    }
+
+    @Test
+    void shouldPassCheckIntersection() {
+        Task task1 = createTask();
+        manager.createTask(task1);
+        task1.setDuration(60);
+        manager.updateTask(task1);
+        Task task2 = createTask();
+        manager.createTask(task2);
+        manager.updateTask(task2);
+    }
+
+    @Test
+    void shouldNotPassCheckIntersection() {
+        final ManagerValidateException exception = assertThrows(
+                ManagerValidateException.class,
+                new Executable() {
+                    @Override
+                    public void execute() throws ManagerValidateException {
+                        Task task1 = createTask();
+                        manager.createTask(task1);
+                        task1.setStartTime(Instant.ofEpochSecond(100000));
+                        manager.updateTask(task1);
+                        Task task2 = createTask();
+                        manager.createTask(task2);
+                        task2.setStartTime(Instant.ofEpochSecond(100000));
+                        manager.updateTask(task2);
+                    }
+                });
     }
 
     @Test
