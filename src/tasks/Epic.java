@@ -11,7 +11,8 @@ public class Epic extends Task {
 
     private final List<Integer> subtasksIds = new ArrayList<>();
 
-    private Instant endTime;
+    private transient Instant endTime;
+
     public Epic(String title, String description, Status status) {
         super(title, description, status);
     }
@@ -46,6 +47,9 @@ public class Epic extends Task {
                 ", id эпика '" + getId() + '\'' +
                 ", Статус '" + getStatus() + '\'' +
                 ", Список id подзадач '" + getSubtasksIds() + '\'' +
+                ", startTime='" + getStartTime().toEpochMilli() + '\'' +
+                ", endTime='" + getEndTime().toEpochMilli() + '\'' +
+                ", duration='" + getDuration() +
                 '}';
     }
 

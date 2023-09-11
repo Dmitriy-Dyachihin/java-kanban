@@ -11,10 +11,10 @@ public class InMemoryHistoryManager implements HistoryManager{
 
     private final CustomLinkedList history = new CustomLinkedList();
 
-    public class CustomLinkedList {
-        Map<Integer, Node> elements = new HashMap<>();
-        public Node head;
-        public Node tail;
+    private class CustomLinkedList {
+        private final Map<Integer, Node> elements = new HashMap<>();
+        private Node head;
+        private Node tail;
 
         private void linkLast(Task task) {
             Node element = new Node();

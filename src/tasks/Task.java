@@ -2,9 +2,7 @@ package tasks;
 
 import taskStatus.Status;
 
-import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Task {
@@ -12,7 +10,7 @@ public class Task {
     private String description;
     private Status status;
     private int id;
-    private Instant startTime;
+    private transient Instant startTime;
     private long duration;
 
     public Task(String title, String description, Status status) {
@@ -88,6 +86,9 @@ public class Task {
                 ", Описание '" + description + '\'' +
                 ", id задачи '" + getId() + '\'' +
                 ", Статус '" + status + '\'' +
+                ", startTime='" + startTime.toEpochMilli() + '\'' +
+                ", endTime='" + getEndTime().toEpochMilli() + '\'' +
+                ", duration='" + duration +
                 '}';
     }
 
@@ -96,7 +97,9 @@ public class Task {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return id == task.id && Objects.equals(title, task.title) && Objects.equals(description, task.description) && status == task.status && Objects.equals(startTime, task.startTime) && Objects.equals(duration, task.duration);
+        return id == task.id && Objects.equals(title, task.title) && Objects.equals(description, task.description)
+                && status == task.status && Objects.equals(startTime, task.startTime)
+                && Objects.equals(duration, task.duration);
     }
 
     @Override

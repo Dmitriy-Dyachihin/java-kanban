@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public class Subtask extends Task {
 
-    private int epicId;
+    private final int epicId;
     public Subtask(String title, String description, Status status, int epicId) {
         super(title, description, status);
         this.epicId = epicId;
@@ -22,9 +22,6 @@ public class Subtask extends Task {
         return epicId;
     }
 
-    public void setEpicId(Integer epicId) {
-        this.epicId = epicId;
-    }
 
     @Override
     public String toString() {
@@ -34,6 +31,9 @@ public class Subtask extends Task {
                 ", id эпика, которому принадлежит '" + getEpicId() + '\'' +
                 ", id подзадачи '" + getId() + '\'' +
                 ", Статус '" + getStatus() + '\'' +
+                ", startTime='" + getStartTime().toEpochMilli() + '\'' +
+                ", endTime='" + getEndTime().toEpochMilli() + '\'' +
+                ", duration='" + getDuration() +
                 '}';
     }
 

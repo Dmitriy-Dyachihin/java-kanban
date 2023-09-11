@@ -10,11 +10,11 @@ import java.util.*;
 
 public class InMemoryTaskManager implements  TaskManager {
 
-    private static int id = 0;
+    protected static int id = 0;
 
-    private final Map<Integer, Task> tasks = new HashMap<>(); // Список для хранения задач
-    private final Map<Integer, Epic> epics = new HashMap<>(); // Список для хранения эпиков
-    private final Map<Integer, Subtask> subtasks = new HashMap<>(); // Список для хранения подзадач
+    protected final Map<Integer, Task> tasks = new HashMap<>(); // Список для хранения задач
+    protected final Map<Integer, Epic> epics = new HashMap<>(); // Список для хранения эпиков
+    protected final Map<Integer, Subtask> subtasks = new HashMap<>(); // Список для хранения подзадач
 
     private final HistoryManager historyManager;
     private final Comparator<Task> comparator = Comparator.comparing(Task::getStartTime);
@@ -30,7 +30,7 @@ public class InMemoryTaskManager implements  TaskManager {
     @Override
     public Task createTask(Task task) {
         if(task == null) {
-            System.out.println("Некорректный ввод");
+            //System.out.println("Некорректный ввод");
             return null;
         }
         int idOfNewTask = assignId();
@@ -44,7 +44,7 @@ public class InMemoryTaskManager implements  TaskManager {
     @Override
     public Subtask createSubtask(Subtask subtask) {
         if(subtask == null) {
-            System.out.println("Некорректный ввод");
+            //System.out.println("Некорректный ввод");
             return null;
         } else {
             int idOfNewSubtask = assignId();
@@ -67,7 +67,7 @@ public class InMemoryTaskManager implements  TaskManager {
     @Override
     public Epic createEpic(Epic epic) {
         if(epic == null) {
-            System.out.println("Некорректный ввод");
+            //System.out.println("Некорректный ввод");
             return null;
         } else {
             int idOfNewEpic = assignId();
@@ -170,14 +170,9 @@ public class InMemoryTaskManager implements  TaskManager {
         if(subtasks.containsKey(subtask.getId()) && subtask != null) {
             addPrioritizedTask(subtask);
             subtasks.put(subtask.getId(), subtask);
-            for(Epic epic : epics.values()) {
-                for(int idOfSubtask : epic.getSubtasksIds()) {
-                    if (idOfSubtask == subtask.getId()) {
-                        updateStatus(epic);
-                        updateTime(epic);
-                    }
-                }
-            }
+            Epic epic = epics.get(subtask.getEpicId());
+            updateStatus(epic);
+            updateTime(epic);
         } else {
             System.out.println("Некорректный ввод");
         }
@@ -224,7 +219,6 @@ public class InMemoryTaskManager implements  TaskManager {
     @Override
     public void removeEpicById(int id) {
         if (epics.containsKey(id)){
-            System.out.println(epics);
             Epic epic = epics.get(id);
             for (int idOfSubtask : epic.getSubtasksIds()) {
                 prioritizedTasks.removeIf(task -> Objects.equals(task.getId(), idOfSubtask));
@@ -253,34 +247,28 @@ public class InMemoryTaskManager implements  TaskManager {
 
     @Override
     public void updateStatus(Epic epic) {
-        if(epics.containsKey(epic.getId())){
-            if(epic.getSubtasksIds().size() == 0) {
-                epic.setStatus(Status.NEW);
+        List<Subtask> subtaskOfEpic = getSubtasksByEpic(epic);
+        List<Status> listOfStatuses = new ArrayList<>();
+        for(Subtask subtask : subtaskOfEpic) {
+            listOfStatuses.add(subtask.getStatus());
+        }
+        int newCounter = 0;
+        int doneCounter = 0;
+        for(Status status : listOfStatuses) {
+            if (status.equals(Status.NEW)) {
+                newCounter++;
+            } else if (status.equals(Status.DONE)) {
+                doneCounter++;
             } else {
-                List<Subtask> subtaskOfEpic = getSubtasksByEpic(epic);
-                List<Status> statuses = new ArrayList<>();
-                for (Subtask subtask : subtaskOfEpic) {
-                    statuses.add(subtask.getStatus());
-                }
-                int newCounter = 0;
-                int doneCounter = 0;
-                for (Status status : statuses) {
-                    if (status.equals(Status.NEW)) {
-                        newCounter++;
-                    } else if (status.equals(Status.DONE)) {
-                        doneCounter++;
-                    } else {
-                        epic.setStatus(Status.IN_PROGRESS);
-                    }
-                }
-                if (newCounter == statuses.size()) {
-                    epic.setStatus(Status.NEW);
-                } else if (doneCounter == statuses.size()) {
-                    epic.setStatus(Status.DONE);
-                } else {
-                    epic.setStatus(Status.IN_PROGRESS);
-                }
+                epic.setStatus(Status.IN_PROGRESS);
             }
+        }
+        if (newCounter == listOfStatuses.size()) {
+            epic.setStatus(Status.NEW);
+        } else if (doneCounter == listOfStatuses.size()) {
+            epic.setStatus(Status.DONE);
+        } else {
+            epic.setStatus(Status.IN_PROGRESS);
         }
     }
 
@@ -336,7 +324,7 @@ public class InMemoryTaskManager implements  TaskManager {
 
     private boolean checkIntersection(Task task) {
         List<Task> tasks = List.copyOf(prioritizedTasks);
-        int quantityNullTime = 0;
+        int quantityWithoutTime = 0;
         if (tasks.size() > 0) {
             for (Task savedTask : tasks) {
                 if (savedTask.getStartTime() != null && savedTask.getEndTime() != null) {
@@ -348,11 +336,11 @@ public class InMemoryTaskManager implements  TaskManager {
                         return true;
                     }
                 } else {
-                    quantityNullTime++;
+                    quantityWithoutTime++;
                 }
 
             }
-            return quantityNullTime == tasks.size();
+            return quantityWithoutTime == tasks.size();
         } else {
             return true;
         }
@@ -372,7 +360,18 @@ public class InMemoryTaskManager implements  TaskManager {
         }
     }
 
-    private List<Task> getPrioritizedTasks() {
+    @Override
+    public List<Task> getPrioritizedTasks() {
         return prioritizedTasks.stream().toList();
+    }
+
+    @Override
+    public String toString() {
+        return "Manager{" +
+                "tasks=" + tasks +
+                ", subtasks=" + subtasks +
+                ", epics=" + epics +
+                ", historyManager=" + historyManager.getHistory() +
+                '}';
     }
 }
