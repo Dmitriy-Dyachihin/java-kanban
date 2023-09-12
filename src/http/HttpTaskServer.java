@@ -22,15 +22,15 @@ import java.time.Instant;
 
 public class HttpTaskServer  {
     private final HttpServer httpServer;
-    private static final int PORT = 8080;
+    private final int PORT = 8080;
 
-    private static final Gson gson = new GsonBuilder().registerTypeAdapter(Instant.class, new InstantAdapter()).create();
-    private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
+    private final Gson gson = new GsonBuilder().registerTypeAdapter(Instant.class, new InstantAdapter()).create();
+    private final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
-    private static HistoryManager historyManager = Managers.getDefaultHistory();
-    private static TaskManager taskManager;
+    private HistoryManager historyManager = Managers.getDefaultHistory();
+    private TaskManager taskManager;
 
-    static {
+    {
         try {
             taskManager = Managers.getDefault(historyManager);
         } catch (IOException | InterruptedException e) {
@@ -49,7 +49,7 @@ public class HttpTaskServer  {
         httpServer.createContext("/tasks/", new TasksHandler());
     }
 
-    static class TaskHandler implements HttpHandler {
+    class TaskHandler implements HttpHandler {
 
         @Override
         public void handle(HttpExchange httpExchange) throws IOException {
@@ -142,7 +142,7 @@ public class HttpTaskServer  {
         }
     }
 
-    static class EpicHandler implements HttpHandler {
+    class EpicHandler implements HttpHandler {
 
         @Override
         public void handle(HttpExchange exchange) throws IOException {
@@ -233,7 +233,7 @@ public class HttpTaskServer  {
         }
     }
 
-    static class SubtaskHandler implements HttpHandler {
+    class SubtaskHandler implements HttpHandler {
 
         @Override
         public void handle(HttpExchange exchange) throws IOException {
@@ -323,7 +323,7 @@ public class HttpTaskServer  {
         }
     }
 
-    static class SubtaskByEpicHandler implements HttpHandler {
+    class SubtaskByEpicHandler implements HttpHandler {
 
         @Override
         public void handle(HttpExchange httpExchange) throws IOException {
@@ -358,7 +358,7 @@ public class HttpTaskServer  {
         }
     }
 
-    static class HistoryHandler implements HttpHandler {
+    class HistoryHandler implements HttpHandler {
 
         @Override
         public void handle(HttpExchange httpExchange) throws IOException {
@@ -385,7 +385,7 @@ public class HttpTaskServer  {
         }
     }
 
-    static class TasksHandler implements HttpHandler {
+    class TasksHandler implements HttpHandler {
 
         @Override
         public void handle(HttpExchange httpExchange) throws IOException {
